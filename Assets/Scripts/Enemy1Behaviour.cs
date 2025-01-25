@@ -5,8 +5,8 @@ using UnityEngine;
 public class Enemy1Behaviour : MonoBehaviour
 {
     public Transform Player; // Reference to the player
-    public float minSpeed = 3.0f; // Minimum speed of the enemy
-    public float maxSpeed = 7.0f; // Maximum speed of the enemy
+    public float minSpeed = 9.0f; // Minimum speed of the enemy
+    public float maxSpeed = 15.0f; // Maximum speed of the enemy
     public float minSlope = 1.0f; // Minimum slope for X movement
     public float maxSlope = 5.0f; // Maximum slope for X movement
 

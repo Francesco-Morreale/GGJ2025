@@ -7,7 +7,8 @@ public class Enemy1Spawner : MonoBehaviour
     public GameObject Enemy1; // Reference to the enemy prefab
     public float SpawnInterval = 2.0f; // Time interval between spawns
     public GameObject PlayerModelTest; // Reference to the player model
-    public float yOffset = 0.5f; // Fixed offset above the player (can be adjusted)
+    public float minSpawnDistance = 8.0f; // Minimum distance from the player for spawning
+    public float maxSpawnDistance = 15.0f; // Maximum distance from the player for spawning
 
     // Start is called before the first frame update
     void Start()
@@ -17,18 +18,34 @@ public class Enemy1Spawner : MonoBehaviour
 
     void SpawnObject()
     {
-        // Get the player's current position
         Vector3 playerPosition = PlayerModelTest.transform.position;
 
-        // Calculate spawn position near the player with a fixed Y coordinate
+        // Generate a random angle and distance
+        float randomAngle = Random.Range(0f, 720f); // Random angle in degrees
+        float randomDistance = Random.Range(minSpawnDistance, maxSpawnDistance); // Random distance from player
+
+        // Calculate spawn position using polar coordinates
         Vector3 spawnPosition = new Vector3(
-            playerPosition.x + Random.Range(-5f, 7f), // Random X offset near the player
-            playerPosition.y + yOffset+Random.Range(-5f, 7f),              // Fixed Y offset above the player
-            playerPosition.z                           // Same Z coordinate as the player
+            playerPosition.x + Mathf.Cos(randomAngle * Mathf.Deg2Rad) * randomDistance,
+            playerPosition.y + Mathf.Cos(randomAngle * Mathf.Deg2Rad) * randomDistance, // Random Y offset above the player
+            0
         );
 
-        // Instantiate the enemy at the calculated spawn position
-        Instantiate(Enemy1, spawnPosition, Quaternion.identity);
+        // Check if the spawn position is valid before instantiation
+        if (IsValidSpawnPosition(spawnPosition))
+        {
+            Instantiate(Enemy1, spawnPosition, Quaternion.identity);
+        }
+        else
+        {
+            Debug.LogWarning("Invalid spawn position detected.");
+        }
+    }
+
+    bool IsValidSpawnPosition(Vector3 position)
+    {
+        // Check if there are any colliders within a sphere around the spawn position
+        return !Physics.CheckSphere(position, minSpawnDistance);
     }
 
     // Update is called once per frame
